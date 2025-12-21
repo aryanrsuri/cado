@@ -17,7 +17,6 @@ class Issue:
     ):
         with sqlmodel.Session(db.engine) as session:
             now = int(time.time())
-            # Get max position for this column
             statement = sqlmodel.select(db.issues).where(
                 db.issues.column_id == column_id
             )

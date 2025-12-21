@@ -10,4 +10,18 @@ Working on adding:
 * tags
 * groups / users
 
+
+Note if you prefer a host-path volume, change the db volume to a bind mount:
+```
+services:
+  db:
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+```
+Then create the directory once and restart the stack:
+```
+mkdir -p data/mysql
+```
+
+
 Made with <3 by @aryansuri (and minor help from LLMs)

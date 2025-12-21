@@ -1,6 +1,6 @@
 import os
 
-from sqlalchemy import Column, Integer, text
+from sqlalchemy import Column, Integer, Text, text
 from sqlmodel import Field, Session, SQLModel, UniqueConstraint, create_engine
 
 
@@ -59,7 +59,7 @@ class issues(SQLModel, table=True):
     position: int
     score: int
     priority: int = Field(default=3)
-    description: str
+    description: str = Field(sa_column=Column(Text))
     body: bytes | None = None
     color: str
     status: int = Field(default=0)
