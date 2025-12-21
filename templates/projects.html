@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div style="margin-top: 1em;">
+        <form method="post" action="/project">
+            <table class="formtable">
+                <tr>
+                    <th>Create Project:</th>
+                    <td>
+                        <input type="text" name="name" placeholder="Project name" required>
+                        <input type="submit" value="Create">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+<div class="issue-list">
+    <div class="header">
+        <h3>Recent Open Projects</h3>
+        <div class="pagination">
+            1 - {{ projects|length }} <a href="#">Older &gt;</a>
+        </div>
+    </div>
+
+    <table id="queues" class="history">
+        <thead>
+            <tr>
+                <th class="first">Id</th>
+                <th>Name</th>
+                <th>Created</th>
+                <th>Modified</th>
+                <th class="last">Last updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+            <tr>
+                <td class="first">{{ project.id }}</td>
+                <td class="subject">
+                    <a href="/project/{{ project.id }}">{{ project.name }}</a>
+                </td>
+                <td>{{ project.ctime|utc }}</td>
+                <td>{{ project.mtime|utc }}</td>
+                <td class="last date">{{ project.mtime|utc }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        1 - {{ projects|length }} <a href="#">Older &gt;</a>
+    </div>
+</div>
+
+
+{% endblock %}

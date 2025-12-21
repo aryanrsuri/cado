@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="issue-list">
+    <div class="header">
+        <h3>Recent Open Issues</h3>
+        <div class="pagination">
+            1 - {{ issues|length }} <a href="#">Older &gt;</a>
+        </div>
+    </div>
+
+    <table id="queues" class="history">
+        <thead>
+            <tr>
+                <th class="first">Id</th>
+                <th>Title</th>
+                <th>Project</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Type</th>
+                <th>Created</th>
+                <th class="last">Modified</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue, project_name in issues %}
+            <tr>
+                <td class="first">{{ issue.id }}</td>
+                <td class="subject">
+                    <a href="/issue/{{ issue.id }}">{{ issue.title }}</a>
+                </td>
+                <td>{{ project_name }}</td>
+                <td>{{ issue.status|status }}</td>
+                <td>{{ issue.priority }}</td>
+                <td>{{ issue.type }}</td>
+                <td>{{ issue.ctime|utc }}</td>
+                <td class="last date">{{ issue.mtime|utc }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        1 - {{ issues|length }} <a href="#">Older &gt;</a>
+    </div>
+</div>
+
+{% endblock %}

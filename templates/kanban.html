@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Project {{ project.id }}: {{ project.name }}</h1>
+
+<div class="issue-list">
+    <div class="header">
+        <h3>Kanban</h3>
+    </div>
+    <div style="padding: 10px; background: white;">
+        <div style="display: flex; gap: 10px; overflow-x: auto; padding: 10px 0;">
+            {% for item in board_data %}
+            <div class="column-container" data-column-id="{{ item.column.id }}" style="min-width: 250px; background: #f3f3f3; border: 1px solid lightgray; border-radius: 5px; padding: 10px;">
+                <h3 style="margin-top: 0; font-size: 1.1em; border-bottom: 2px solid #93b7fa; padding-bottom: 5px;">{{ item.column.name }}</h3>
+                <div style="min-height: 100px;">
+                    {% for issue in item.issues %}
+                    <div class="issue-card" data-issue-id="{{ issue.id }}" style="background: white; border: 1px solid #ddd; border-radius: 3px; padding: 8px; margin-bottom: 5px; cursor: move;">
+                        <div class="subject">
+                            <a href="/issue/{{ issue.id }}">{{ issue.title }}</a>
+                        </div>
+                        {% if issue.description %}
+                        <div style="font-size: 0.9em; color: #777; margin-top: 5px;">{{ issue.description[:50] }}...</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <form method="post" action="/project/{{ project.id }}/issue" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd;">
+                    <input type="hidden" name="column_id" value="{{ item.column.id }}">
+                    <input type="text" name="title" placeholder="Add issue..." required style="width: 100%; padding: 5px; margin-bottom: 5px; border: 1px solid #ddd; box-sizing: border-box;">
+                    <textarea name="description" placeholder="Description (optional)" style="width: 100%; padding: 5px; border: 1px solid #ddd; font-size: 12px; box-sizing: border-box;"></textarea>
+                    <input type="submit" value="Add" style="margin-top: 5px; padding: 5px 10px;">
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/board.js"></script>
+{% endblock %}

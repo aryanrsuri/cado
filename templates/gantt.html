@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Project {{ project.id }}: {{ project.name }}</h1>
+
+<div class="gantt">
+    <div class="gantt-header">
+        <h3>Gantt</h3>
+        {% if min_ts and max_ts %}
+        <div class="gantt-range">{{ min_ts|utc }} - {{ max_ts|utc }}</div>
+        {% endif %}
+    </div>
+    {% if status_labels %}
+    <div class="gantt-legend">
+        {% for status_id, label in status_labels %}
+        <span class="gantt-legend-item"><span class="gantt-legend-swatch status-{{ status_id }}"></span>{{ label }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if rows %}
+    <div class="gantt-axis">
+        <div class="gantt-axis-label">{{ min_ts|utc }}</div>
+        <div class="gantt-axis-line">
+            {% for tick in ticks %}
+            <div class="gantt-tick" style="left: {{ tick.pct }}%;">
+                <span>{{ tick.ts|utc }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="gantt-axis-label gantt-axis-right">{{ max_ts|utc }}</div>
+    </div>
+    <div class="gantt-rows">
+        {% for row in rows %}
+        <div class="gantt-row">
+            <div class="gantt-label">
+                <div>
+                    <a href="/issue/{{ row.issue.id }}">{{ row.issue.title }}</a>
+                </div>
+                <div class="gantt-meta">#{{ row.issue.id }} · {{ row.column_name }} · {{ row.issue.status|status }}</div>
+                <div class="gantt-times">
+                    C: {{ row.issue.ctime|utc }}
+                    S: {{ row.issue.stime|utc }}
+                    E: {{ row.issue.etime|utc }}
+                    M: {{ row.issue.mtime|utc }}
+                </div>
+            </div>
+            <div class="gantt-bar-wrap">
+                {% if now_pct is not none %}
+                <div class="gantt-now" style="left: {{ now_pct }}%;" title="Now"></div>
+                {% endif %}
+                {% for seg in row.segments %}
+                <div class="gantt-seg status-{{ seg.status }}"
+                     style="left: {{ seg.left_pct }}%; width: {{ seg.width_pct }}%;"
+                     title="C {{ row.issue.ctime|utc }} | S {{ row.issue.stime|utc }} | E {{ row.issue.etime|utc }} | M {{ row.issue.mtime|utc }}">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="gantt-empty">No issues yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

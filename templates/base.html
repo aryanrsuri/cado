@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <i>Cado</i>
+    <div class="mainmenu">
+        <a href="/" class="{{ 'active' if active_page == 'projects' else 'inactive' }}">Projects</a>
+        <a href="/issues" class="{{ 'active' if active_page == 'issues' else 'inactive' }}">Issues</a>
+    </div>
+    <div class="mainmenu2">
+      <a href="/" style="display: {{'none' if active_page == 'issues' else 'inline'}}">All Projects</a> 
+      <a href="/" style="display: {{'none' if active_page == 'projects' else 'inline'}}">All Issues</a> 
+      <a href="/search">Search</a> 
+      {% if project and active_subpage %}
+      <span class="menu-sep">|</span>
+      <a href="/project/{{ project.id }}" class="{{ 'active' if active_subpage == 'board' else '' }}">Board</a>
+      <a href="/project/{{ project.id }}/kanban" class="{{ 'active' if active_subpage == 'kanban' else '' }}">Kanban</a>
+      <a href="/project/{{ project.id }}/gantt" class="{{ 'active' if active_subpage == 'gantt' else '' }}">Gantt</a>
+      {% endif %}
+    </div>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

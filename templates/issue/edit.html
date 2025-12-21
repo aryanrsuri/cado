@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Issue <a href="/issue/{{ issue.id }}">{{ issue.id }}</a>: {{ issue.title }}</h1>
+
+<div>
+    <div>
+            <form method="post" action="/issue/{{ issue.id }}">
+                <table class="formtable">
+                    <tr>
+                        <th>Title:</th>
+                        <td>
+                            <input type="text" name="title" value="{{ issue.title }}" style="width: 99%;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Status:</th>
+                        <td>
+                            <input type="number" name="status" value="{{ issue.status }}" min="-1" style="width: 60px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Priority:</th>
+                        <td>
+                            <input type="number" name="priority" value="{{ issue.priority }}" min="0" max="5" style="width: 60px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Type:</th>
+                        <td>
+                            <input type="text" name="type" value="{{ issue.type }}" style="width: 99%;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Color:</th>
+                        <td>
+                            <input type="text" name="color" value="{{ issue.color }}" style="width: 99%;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <td>
+                            <input type="submit" value="Update">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
