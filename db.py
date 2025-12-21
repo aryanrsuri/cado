@@ -1,3 +1,5 @@
+import os
+
 from sqlalchemy import Column, Integer, text
 from sqlmodel import Field, Session, SQLModel, UniqueConstraint, create_engine
 
@@ -9,8 +11,8 @@ class projects(SQLModel, table=True):
     mtime: int = Field(
         sa_column=Column(
             Integer,
-            server_default=text("(strftime('%s','now'))"),
-            onupdate=text("(strftime('%s','now'))"),
+            server_default=text("(UNIX_TIMESTAMP())"),
+            onupdate=text("(UNIX_TIMESTAMP())"),
             nullable=False,
         )
     )
@@ -26,15 +28,15 @@ class subissues(SQLModel, table=True):
     mtime: int = Field(
         sa_column=Column(
             Integer,
-            server_default=text("(strftime('%s','now'))"),
-            onupdate=text("(strftime('%s','now'))"),
+            server_default=text("(UNIX_TIMESTAMP())"),
+            onupdate=text("(UNIX_TIMESTAMP())"),
             nullable=False,
         )
     )
     status: int = Field(default=0)
     time_spent: int = Field(default=0)
     time_estimated: int = Field(default=0)
-    issue_id: str = Field(foreign_key="issues.id")
+    issue_id: int = Field(foreign_key="issues.id")
 
 
 class issues(SQLModel, table=True):
@@ -44,8 +46,8 @@ class issues(SQLModel, table=True):
     mtime: int = Field(
         sa_column=Column(
             Integer,
-            server_default=text("(strftime('%s','now'))"),
-            onupdate=text("(strftime('%s','now'))"),
+            server_default=text("(UNIX_TIMESTAMP())"),
+            onupdate=text("(UNIX_TIMESTAMP())"),
             nullable=False,
         )
     )
@@ -63,9 +65,9 @@ class issues(SQLModel, table=True):
     status: int = Field(default=0)
     active: bool = Field(default=True)
     type: str = Field(default="task")
-    project_id: str | None = Field(default=None, foreign_key="projects.id")
-    column_id: str | None = Field(default=None, foreign_key="columns.id")
-    swimlane_id: str | None = Field(default=None, foreign_key="swimlanes.id")
+    project_id: int | None = Field(default=None, foreign_key="projects.id")
+    column_id: int | None = Field(default=None, foreign_key="columns.id")
+    swimlane_id: int | None = Field(default=None, foreign_key="swimlanes.id")
 
 
 class columns(SQLModel, table=True):
@@ -75,15 +77,15 @@ class columns(SQLModel, table=True):
     mtime: int = Field(
         sa_column=Column(
             Integer,
-            server_default=text("(strftime('%s','now'))"),
-            onupdate=text("(strftime('%s','now'))"),
+            server_default=text("(UNIX_TIMESTAMP())"),
+            onupdate=text("(UNIX_TIMESTAMP())"),
             nullable=False,
         )
     )
     issue_limit: int = Field(default=5)
     position: int
     active: bool = Field(default=True)
-    project_id: str | None = Field(foreign_key="projects.id")
+    project_id: int | None = Field(foreign_key="projects.id")
 
     __table_args__ = (UniqueConstraint("name", "project_id", name="uq_c_i_project"),)
 
@@ -95,7 +97,7 @@ class swimlanes(SQLModel, table=True):
     position: int
     issue_limit: int = Field(default=5)
     active: bool = Field(default=True)
-    project_id: str | None = Field(foreign_key="projects.id")
+    project_id: int | None = Field(foreign_key="projects.id")
 
     __table_args__ = (UniqueConstraint("name", "project_id", name="uq_sl_i_project"),)
 
@@ -129,8 +131,8 @@ class users(SQLModel, table=True):
 class events(SQLModel, table=True):
     id: int = Field(primary_key=True)
     ctime: int
-    project_id: str | None = Field(foreign_key="projects.id")
-    issue_id: str | None = Field(foreign_key="issues.id")
+    project_id: int | None = Field(foreign_key="projects.id")
+    issue_id: int | None = Field(foreign_key="issues.id")
     event_name: str
     action_name: str
     log: bytes | None = None
@@ -140,5 +142,5 @@ class version(SQLModel, table=True):
     version: int = Field(primary_key=True)
 
 
-engine = create_engine("sqlite:///database.db")
+engine = create_engine(os.getenv("DATABASE_URL", "sqlite:///database.db"))
 SQLModel.metadata.create_all(engine)

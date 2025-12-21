@@ -1,1 +1,12 @@
-cado is a pm software
+cado (can do) is a project management software
+-----------
+
+I needed something self-hosted and deeply simple to manage my work/personal projects. 
+And I will add features at my own pace. The only dependency is docker, but you can 
+locally run with a mysql instance, or change ``db.py`` to use a simpler/different engine.
+
+Working on adding:
+* search
+* tags
+
+Made with <3 by @aryansuri (and minor help from LLMs)
