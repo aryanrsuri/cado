@@ -8,5 +8,6 @@ locally run with a mysql instance, or change ``db.py`` to use a simpler/differen
 Working on adding:
 * search
 * tags
+* groups / users
 
 Made with <3 by @aryansuri (and minor help from LLMs)
