@@ -4,7 +4,6 @@ body {
   background-color: #fff;
 }
 
-/* Looks like a no-op, but inputs don't inherit font-size otherwise. */
 input {
   font-size: 100%;
 }
@@ -16,13 +15,15 @@ form {
 a {
   color: #4182fa;
 }
+a:visited {
+  color: #a32a91;
+}
 
 h3 {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
 
-/* Make h1 headers lighter */
 h1 {
   font-weight: normal;
   margin-top: 0px;
@@ -38,7 +39,6 @@ h1 {
   white-space: nowrap;
 }
 
-/* Styles for the history table */
 table.history {
   border-width: 0px;
   border-spacing: 0px;
@@ -50,7 +50,6 @@ table.history td, th {
   padding: 3px;
 }
 
-/* Issue lists */
 .issue-list {
   background-color: #E5ECF9;
   border: 1px solid  #93b7fa;
@@ -101,7 +100,6 @@ table.history td, th {
   word-wrap: break-word;
 }
 
-/* Issue description. */
 .description {
   background-color: #e5ecf9;
   margin-top: 0;
@@ -119,7 +117,6 @@ table.history td, th {
   white-space: pre-wrap;
 }
 
-/* Main menu */
 .mainmenu {
   margin-top: 1em;
 }
@@ -164,7 +161,6 @@ table.history td, th {
   color: #666;
 }
 
-/* Gantt */
 .gantt {
   background-color: #E5ECF9;
   border: 1px solid #93b7fa;
@@ -328,7 +324,6 @@ table.history td, th {
   padding: 8px;
 }
 
-/* Comment section */
 .comment-section {
   margin-top: 2em;
   background: #f4f7ff;
@@ -498,7 +493,6 @@ details.comment-item {
   height: 2em;
 }
 
-/* Queues table */
 table#queues {
   border-collapse: collapse;
   width: 100%;
@@ -512,7 +506,6 @@ table#queues td {
   padding: 2px;
 }
 
-/* Form tables */
 .formtable th {
   padding-top: 6px;
   vertical-align: top;
