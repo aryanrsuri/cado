@@ -45,6 +45,11 @@
                     </tr>
                 </table>
             </form>
+            <form method="post" action="/issue/{{ issue.id }}/tag" style="margin-top: .5em;">
+                <label for="tag">Tag:</label>
+                <input type="text" id="tag" name="tag" placeholder="tag" style="width: 12em;">
+                <input type="submit" value="Add">
+            </form>
         </div>
     </div>
 </div>

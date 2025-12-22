@@ -4,7 +4,6 @@
 <h1>Issue <a href="/issue/{{ issue.id }}">{{ issue.id }}</a>: {{ issue.title }}</h1>
 <a href="/issue/{{issue.id}}/edit">Edit Issue</a>
 
-
 <div style="display: flex; gap: 1em;">
     <div class="issue_details_sidebar" style="width: 22em;">
         <div>
@@ -44,108 +43,118 @@
               {{ column.name if column else issue.column_id }}
             {% endif %}
         </div>
+  <div style="margin-top: 1em;">
+    <strong>Tags:</strong><br>
+      <div style="margin-top: 5px">
+      {% for tag, issue in tags %}
+      <span class="tag">{{tag.value}}</span>
+      {% endfor %}
+      </div>
+  </div>
         <div style="margin-top: 1em;">
         {% if issue.status != status_active %}
           <form method="post" action="/issue/{{ issue.id }}/start" style="display: inline;">
             <button type="submit">Start</button>
           </form>
         {% endif %}
-{% if issue.status == status_active %}
-  <form method="post" action="/issue/{{ issue.id }}/stop" style="display: inline;">
-    <button type="submit">Stop</button>
-  </form>
-  <form method="post" action="/issue/{{ issue.id }}/log" style="display: inline;">
-    <input type="number" name="minutes" min="1" placeholder="min" style="width: 4.5em;">
-    <button type="submit">Log</button>
-  </form>
-{% endif %}
-        </div>
-    </div>
-    <div style="flex: 1;">
-        <div class="description">
-            {% if editing %}
-              <form method="post" action="/issue/{{ issue.id }}/description">
-                <textarea name="description" rows="10" style="width: 100%;">{{ issue.description or "" }}</textarea>
-                <div style="margin-top: .5em;">
-                  <input type="submit" value="Save">
-                  <a href="/issue/{{ issue.id }}" style="margin-left: .5em;">Cancel</a>
-                </div>
-              </form>
-            {% else %}
-              <div style="margin: .5em; float: right;">
-                <a href="/issue/{{ issue.id }}?edit=1"><i>Edit</i></a>
-              </div>
-              <div id="issue-description">
-                {% if issue.description %}
-                  {{ issue.description | safe }}
-                {% else %}
-                  <i>(No description)</i>
-                {% endif %}
-              </div>
-
-            {% endif %}
-          </div>
-        <div class="comment-section">
-            <div class="comment-bar">
-              <div class="comment-count">Total messages: {{ comments|length if comments else 0 }}</div>
-              <div class="comment-controls">
-                <button type="button" class="link-button" id="expand-comments">Expand all</button>
-                <span aria-hidden="true">|</span>
-                <button type="button" class="link-button" id="collapse-comments">Collapse all</button>
-              </div>
-            </div>
-            <div class="comment-list">
-                {% if comments %}
-                  <table class="history comment-table">
-                    <tbody>
-                      {% for comment in comments %}
-                        {% set _first_line = (comment.text.split('\n')[0] if comment.text else '') %}
-                        <tr class="comment-row">
-                          <td>
-                            <details class="comment-item">
-                              <summary>
-                                <span class="comment-summary-left">
-                                  <span class="comment-author">{{ comment.username }}</span>
-                                  {% if _first_line %}
-                                    <span class="comment-snippet">{{ _first_line }}</span>
-                                  {% endif %}
-                                </span>
-                                <span class="comment-summary-right">
-                                  <span class="comment-date">{{ comment.ctime|utc }}</span>
-                                  <button type="button" class="link-button comment-reply">Reply</button>
-                                </span>
-                              </summary>
-                              <div class="comment-body">
-                                <div class="comment-text">{{ comment.text }}</div>
-                              </div>
-                            </details>
-                          </td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                {% else %}
-                  <div class="comment-empty"><i>No comments yet</i></div>
-                {% endif %}
-            </div>
-            <form method="post" action="/issue/{{ issue.id }}/comment" class="comment-form">
-                <textarea name="comment" rows="4"></textarea>
-                <div class="comment-form-actions">
-                  <input type="submit" value="Add comment" class="fat-button">
-                </div>
+          {% if issue.status == status_active %}
+            <form method="post" action="/issue/{{ issue.id }}/stop" style="display: inline;">
+              <button type="submit">Stop</button>
             </form>
+            <form method="post" action="/issue/{{ issue.id }}/log" style="display: inline;">
+              <input type="number" name="minutes" min="1" placeholder="min" style="width: 4.5em;">
+              <button type="submit">Log</button>
+            </form>
+          {% endif %}
+
+
+                </div>
+  </div>
+  <div style="flex: 1;">
+      <div class="description">
+          {% if editing %}
+            <form method="post" action="/issue/{{ issue.id }}/description">
+              <textarea name="description" rows="10" style="width: 100%;">{{ issue.description or "" }}</textarea>
+              <div style="margin-top: .5em;">
+                <input type="submit" value="Save">
+                <a href="/issue/{{ issue.id }}" style="margin-left: .5em;">Cancel</a>
+              </div>
+            </form>
+          {% else %}
+            <div style="margin: .5em; float: right;">
+              <a href="/issue/{{ issue.id }}?edit=1"><i>Edit</i></a>
+            </div>
+            <div id="issue-description">
+              {% if issue.description %}
+                {{ issue.description | safe }}
+              {% else %}
+                <i>(No description)</i>
+              {% endif %}
+            </div>
+
+          {% endif %}
         </div>
-        <script>
-          (function() {
-            const items = document.querySelectorAll('.comment-item');
-            const expand = document.getElementById('expand-comments');
-            const collapse = document.getElementById('collapse-comments');
-            if (expand && collapse && items.length) {
-              expand.addEventListener('click', () => items.forEach((item) => { item.open = true; }));
-              collapse.addEventListener('click', () => items.forEach((item) => { item.open = false; }));
-            }
-            const replyButtons = document.querySelectorAll('.comment-reply');
-            const commentInput = document.querySelector('.comment-form textarea');
+      <div class="comment-section">
+          <div class="comment-bar">
+            <div class="comment-count">Total messages: {{ comments|length if comments else 0 }}</div>
+            <div class="comment-controls">
+              <button type="button" class="link-button" id="expand-comments">Expand all</button>
+              <span aria-hidden="true">|</span>
+              <button type="button" class="link-button" id="collapse-comments">Collapse all</button>
+            </div>
+          </div>
+          <div class="comment-list">
+              {% if comments %}
+                <table class="history comment-table">
+                  <tbody>
+                    {% for comment in comments %}
+                      {% set _first_line = (comment.text.split('\n')[0] if comment.text else '') %}
+                      <tr class="comment-row">
+                        <td>
+                          <details class="comment-item">
+                            <summary>
+                              <span class="comment-summary-left">
+                                <span class="comment-author">{{ comment.username }}</span>
+                                {% if _first_line %}
+                                  <span class="comment-snippet">{{ _first_line }}</span>
+                                {% endif %}
+                              </span>
+                              <span class="comment-summary-right">
+                                <span class="comment-date">{{ comment.ctime|utc }}</span>
+                                <button type="button" class="link-button comment-reply">Reply</button>
+                              </span>
+                            </summary>
+                            <div class="comment-body">
+                              <div class="comment-text">{{ comment.text }}</div>
+                            </div>
+                          </details>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <div class="comment-empty"><i>No comments yet</i></div>
+              {% endif %}
+          </div>
+          <form method="post" action="/issue/{{ issue.id }}/comment" class="comment-form">
+              <textarea name="comment" rows="4"></textarea>
+              <div class="comment-form-actions">
+                <input type="submit" value="Add comment" class="fat-button">
+              </div>
+          </form>
+      </div>
+      <script>
+        (function() {
+          const items = document.querySelectorAll('.comment-item');
+          const expand = document.getElementById('expand-comments');
+          const collapse = document.getElementById('collapse-comments');
+          if (expand && collapse && items.length) {
+            expand.addEventListener('click', () => items.forEach((item) => { item.open = true; }));
+            collapse.addEventListener('click', () => items.forEach((item) => { item.open = false; }));
+          }
+          const replyButtons = document.querySelectorAll('.comment-reply');
+          const commentInput = document.querySelector('.comment-form textarea');
             replyButtons.forEach((btn) => {
               btn.addEventListener('click', (e) => {
                 if (!commentInput) return;

@@ -39,6 +39,14 @@ h1 {
   white-space: nowrap;
 }
 
+span.tag {
+  border: 1px solid rgb(143, 143, 157);
+  background:rgb(233, 233, 237);
+  border-radius: 3px;
+  padding: 1px 4px;
+  width: fit-content;
+}
+
 table.history {
   border-width: 0px;
   border-spacing: 0px;

@@ -1,7 +1,7 @@
 import os
 
 from sqlalchemy import Column, Integer, Text, text
-from sqlmodel import Field, Session, SQLModel, UniqueConstraint, create_engine
+from sqlmodel import Field, SQLModel, UniqueConstraint, create_engine
 
 
 class projects(SQLModel, table=True):

@@ -1,5 +1,5 @@
-from datetime import datetime, timezone
 import time
+from datetime import datetime, timezone
 from enum import IntEnum
 
 from fastapi import FastAPI, Form, HTTPException, Request
@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from core import columns, comments, events, issues, projects
+from core import columns, comments, events, issues, projects, tags
 
 app = FastAPI()
 
@@ -63,6 +63,8 @@ column_service = columns.Column()
 issue_service = issues.Issue()
 comment_service = comments.Comment()
 event_service = events.Event()
+tag_service = tags.Tag()
+
 
 def build_gantt_data(project_id: int, cols):
     events_list = event_service.get_by_project(project_id)
@@ -167,7 +169,11 @@ def build_gantt_data(project_id: int, cols):
                 else:
                     pending_end = mtime if mtime > ctime else ctime
                     segments.append(
-                        {"start": ctime, "end": pending_end, "status": int(Status.PENDING)}
+                        {
+                            "start": ctime,
+                            "end": pending_end,
+                            "status": int(Status.PENDING),
+                        }
                     )
                 if etime:
                     closed_end = mtime if mtime and mtime >= etime else etime
@@ -320,7 +326,7 @@ async def create_issue(
     column_id: int = Form(...),
     description: str = Form(""),
 ):
-    issue = issue_service.create(title, column_id, project_id, description)
+    issue_service.create(title, column_id, project_id, description)
     return RedirectResponse(url=f"/project/{project_id}", status_code=303)
 
 
@@ -328,7 +334,7 @@ async def create_issue(
 async def create_column(
     project_id: int, name: str = Form(...), position: int = Form(0)
 ):
-    column = column_service.create(name, project_id, position)
+    column_service.create(name, project_id, position)
     return RedirectResponse(url=f"/project/{project_id}", status_code=303)
 
 
@@ -362,6 +368,7 @@ async def view_issue(request: Request, issue_id: int, edit: int = 0):
     )
     column = column_service.get_column(issue.column_id) if issue.column_id else None
     issue_comments = comment_service.get_by_issue(issue_id)
+    tags = tag_service.get_tags_by_issue_id(issue_id)
 
     return templates.TemplateResponse(
         "issue.html",
@@ -373,6 +380,7 @@ async def view_issue(request: Request, issue_id: int, edit: int = 0):
             "status_active": int(Status.ACTIVE),
             "editing": bool(edit),
             "comments": issue_comments,
+            "tags": tags,
         },
     )
 
@@ -488,6 +496,14 @@ async def create_comment(issue_id: int, comment: str = Form("")):
 async def create_project(name: str = Form(...)):
     project = project_service.create(name)
     return RedirectResponse(url=f"/project/{project.id}", status_code=303)
+
+
+@app.post("/issue/{issue_id}/tag")
+async def create_tag(issue_id: int, tag: str = Form("")):
+    tag = tag_service.tag_issue(issue_id, tag)
+    if tag:
+        return RedirectResponse(url=f"/issue/{issue_id}", status_code=303)
+    raise HTTPException(status_code=404, detail="Tag not created")
 
 
 if __name__ == "__main__":

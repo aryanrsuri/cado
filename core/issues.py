@@ -94,7 +94,8 @@ class Issue:
                 now = int(time.time())
                 if issue.stime:
                     elapsed = max(0, now - issue.stime)
-                    issue.time_spent += elapsed
+                    if issue.time_spent <= 0:
+                        issue.time_spent = elapsed
                 issue.etime = now
                 issue.status = 3
                 issue.mtime = now
