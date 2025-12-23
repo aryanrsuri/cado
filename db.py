@@ -1,7 +1,12 @@
 import os
+import time
 
-from sqlalchemy import Column, Integer, Text, text
+from sqlalchemy import Column, Integer, Text
 from sqlmodel import Field, SQLModel, UniqueConstraint, create_engine
+
+
+def unix():
+    return int(time.time())
 
 
 class projects(SQLModel, table=True):
@@ -11,8 +16,8 @@ class projects(SQLModel, table=True):
     mtime: int = Field(
         sa_column=Column(
             Integer,
-            server_default=text("(UNIX_TIMESTAMP())"),
-            onupdate=text("(UNIX_TIMESTAMP())"),
+            default=unix,
+            onupdate=unix,
             nullable=False,
         )
     )
@@ -28,8 +33,8 @@ class subissues(SQLModel, table=True):
     mtime: int = Field(
         sa_column=Column(
             Integer,
-            server_default=text("(UNIX_TIMESTAMP())"),
-            onupdate=text("(UNIX_TIMESTAMP())"),
+            default=unix,
+            onupdate=unix,
             nullable=False,
         )
     )
@@ -46,8 +51,8 @@ class issues(SQLModel, table=True):
     mtime: int = Field(
         sa_column=Column(
             Integer,
-            server_default=text("(UNIX_TIMESTAMP())"),
-            onupdate=text("(UNIX_TIMESTAMP())"),
+            default=unix,
+            onupdate=unix,
             nullable=False,
         )
     )
@@ -77,8 +82,8 @@ class columns(SQLModel, table=True):
     mtime: int = Field(
         sa_column=Column(
             Integer,
-            server_default=text("(UNIX_TIMESTAMP())"),
-            onupdate=text("(UNIX_TIMESTAMP())"),
+            default=unix,
+            onupdate=unix,
             nullable=False,
         )
     )
